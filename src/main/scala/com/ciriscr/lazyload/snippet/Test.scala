@@ -2,7 +2,7 @@ package com.ciriscr.lazyload.snippet
 
 import net.liftweb.util.Helpers._
 import net.liftweb.http.{SHtml, S}
-import net.liftweb.http.js.JsCmds
+import net.liftweb.http.js._
 
 class Test{
 
@@ -14,16 +14,16 @@ class Test{
   private def nextPage: List[String] = this.objects.drop(this.actual).take(this.itemsPerLoad)
 
   def render = {
-    "#elementsTable *" #> (S.eagerEval andThen
+    "#elementsTable" #> (S.eagerEval andThen
       "@element *" #> nextPage.map{ elem =>
         "@number *" #> elem
       }
-    ) & "button [onclick]" #> SHtml.ajaxInvoke{ () =>
+     &
+      "#button [onclick]" #> SHtml.ajaxInvoke{ () =>
       this.actual += this.itemsPerLoad
-      //Add the new elements to the page
-      //HELP HERE :D
-      JsCmds.Alert("See the code")
-    }
+      //Change this js to create a new table or rows, this isn't legal  html now, but you get the idea :)
+      JsCmds.Run("""$("#table1").append("<p>""" + this.actual + """</p>")""")
+    })
   } //render
 
 }  //Test 
